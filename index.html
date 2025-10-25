@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CityBlocks - Creator Collaboration</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <h1>CityBlocks</h1>
+    <p>Where Creators Collaborate</p>
+    <div class="block-info">
+      <strong>Demo Block:</strong> "Jazz Fusion Project"
+    </div>
+  </div>
+
+  <div class="building-container">
+    <div class="brownstone">
+      <!-- Host Window -->
+      <div class="host-window-row">
+        <div class="window host-window occupied" data-window="host">
+          <div class="window-icon">🎬</div>
+          <div class="window-label">HOST - Final Mix</div>
+        </div>
+      </div>
+
+      <!-- Collaborator Windows -->
+      <div class="window-grid">
+        <div class="window collab-window occupied" data-window="1">
+          <div class="window-icon">🎤</div>
+          <div class="window-label">Vocalist</div>
+        </div>
+        <div class="window collab-window occupied" data-window="2">
+          <div class="window-icon">🎸</div>
+          <div class="window-label">Guitarist</div>
+        </div>
+        <div class="window collab-window occupied" data-window="3">
+          <div class="window-icon">🎹</div>
+          <div class="window-label">Pianist</div>
+        </div>
+        <div class="window collab-window occupied" data-window="4">
+          <div class="window-icon">🥁</div>
+          <div class="window-label">Drummer</div>
+        </div>
+        <div class="window collab-window occupied" data-window="5">
+          <div class="window-icon">🎺</div>
+          <div class="window-label">Trumpet</div>
+        </div>
+        <div class="window collab-window occupied" data-window="6">
+          <div class="window-icon">🎷</div>
+          <div class="window-label">Saxophone</div>
+        </div>
+        <div class="window collab-window" data-window="7">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
+        </div>
+        <div class="window collab-window" data-window="8">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
+        </div>
+        <div class="window collab-window" data-window="9">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
+        </div>
+        <div class="window collab-window" data-window="10">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
+        </div>
+        <div class="window collab-window" data-window="11">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
+        </div>
+        <div class="window collab-window" data-window="12">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="instructions">
+    <h3>How CityBlocks Works</h3>
+    <ul>
+      <li><strong>🏠 Each Creator Gets a Block:</strong> Your personal brownstone to host collaborative projects</li>
+      <li><strong>🎭 12 Collaborator Windows:</strong> Invite singers, musicians, animators, voice actors, and more</li>
+      <li><strong>🎬 Host Window:</strong> The top window showcases the final combined performance</li>
+      <li><strong>🔒 Private or Public:</strong> Keep blocks private during creation, then share when ready</li>
+      <li><strong>✨ Pure Collaboration:</strong> No politics, no algorithms - just creators building together</li>
+    </ul>
+  </div>
+
+  <!-- Modal for window details -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Window Title</h2>
+        <button class="close-btn" id="closeModal">×</button>
+      </div>
+      <div id="modal-body">
+        <p>This is where the creator's video performance would appear.</p>
+        <div class="video-placeholder">
+          🎥 Video Player (YouTube/Vimeo embed would go here)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
