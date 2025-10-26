@@ -4,7 +4,320 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CityBlocks - Creator Collaboration</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(to bottom, #87CEEB 0%, #B0C4DE 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      color: #333;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .block-info {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 12px 20px;
+      border-radius: 30px;
+      display: inline-block;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      font-size: 0.95rem;
+    }
+
+    .block-info strong {
+      color: #667eea;
+    }
+
+    /* Main building container */
+    .building-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* The brownstone building image */
+    .building-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Container for all window overlays */
+    .windows-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Individual clickable window areas */
+    .window-spot {
+      position: absolute;
+      cursor: pointer;
+      pointer-events: all;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .window-spot:hover {
+      border-color: #667eea;
+      box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+      transform: scale(1.05);
+      z-index: 10;
+    }
+
+    /* Window content that appears on hover or when occupied */
+    .window-content {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .window-spot:hover .window-content {
+      opacity: 1;
+    }
+
+    .window-spot.occupied .window-content {
+      background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.6) 0%, 
+        rgba(118, 75, 162, 0.6) 100%
+      );
+      opacity: 0.3;
+    }
+
+    .window-spot.occupied:hover .window-content {
+      opacity: 1;
+    }
+
+    .window-icon {
+      font-size: 2rem;
+      margin-bottom: 5px;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    .window-label {
+      background: rgba(0, 0, 0, 0.9);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Positioning for 13 windows - adjust these based on your building image */
+    /* Host window at top */
+    .window-host {
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30%;
+      height: 15%;
+    }
+
+    .window-host .window-label {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    /* Row 1 - 4 windows */
+    .window-1 { top: 28%; left: 8%; width: 18%; height: 14%; }
+    .window-2 { top: 28%; left: 30%; width: 18%; height: 14%; }
+    .window-3 { top: 28%; left: 52%; width: 18%; height: 14%; }
+    .window-4 { top: 28%; left: 74%; width: 18%; height: 14%; }
+
+    /* Row 2 - 4 windows */
+    .window-5 { top: 48%; left: 8%; width: 18%; height: 14%; }
+    .window-6 { top: 48%; left: 30%; width: 18%; height: 14%; }
+    .window-7 { top: 48%; left: 52%; width: 18%; height: 14%; }
+    .window-8 { top: 48%; left: 74%; width: 18%; height: 14%; }
+
+    /* Row 3 - 4 windows */
+    .window-9 { top: 68%; left: 8%; width: 18%; height: 14%; }
+    .window-10 { top: 68%; left: 30%; width: 18%; height: 14%; }
+    .window-11 { top: 68%; left: 52%; width: 18%; height: 14%; }
+    .window-12 { top: 68%; left: 74%; width: 18%; height: 14%; }
+
+    .upload-instructions {
+      text-align: center;
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      max-width: 700px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .upload-instructions h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+    }
+
+    .upload-instructions code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .instructions {
+      text-align: center;
+      margin-top: 30px;
+      color: #333;
+      max-width: 700px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .instructions h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    .instructions ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+
+    .instructions li {
+      margin: 10px 0;
+      padding: 10px;
+      background: rgba(102, 126, 234, 0.05);
+      border-radius: 8px;
+      border-left: 3px solid #667eea;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 800px;
+      width: 100%;
+      position: relative;
+      border: 3px solid #667eea;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .modal-header h2 {
+      color: #667eea;
+      margin: 0;
+    }
+
+    .close-btn {
+      background: #f5f5f5;
+      border: none;
+      color: #333;
+      font-size: 2rem;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background: #667eea;
+      color: #fff;
+    }
+
+    .video-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.2rem;
+      margin-top: 15px;
+      flex-direction: column;
+    }
+
+    #modal-body {
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+      .window-icon {
+        font-size: 1.5rem;
+      }
+      
+      .window-label {
+        font-size: 0.6rem;
+        padding: 3px 8px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="header">
@@ -15,135 +328,196 @@
     </div>
   </div>
 
-  <div class="building-container">
-    <div class="building-facade">
-      <div class="upload-note">
-        💡 Replace background with your brownstone image
-      </div>
-
-      <!-- Host Window (Top) -->
-      <div class="host-row">
-        <div class="window host-window occupied" data-window="host">
-          <div class="window-content">
-            <div class="window-icon">🎬</div>
-            <div class="window-label">HOST - Final Mix</div>
-          </div>
+  <div class="building-wrapper">
+    <!-- Replace this image with your brownstone photo -->
+    <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1200&q=80" 
+         alt="Brownstone Building" 
+         class="building-image"
+         id="buildingImg">
+    
+    <!-- Clickable window overlays positioned on the building -->
+    <div class="windows-overlay">
+      <!-- Host Window -->
+      <div class="window-spot window-host occupied" data-window="host">
+        <div class="window-content">
+          <div class="window-icon">🎬</div>
+          <div class="window-label">HOST - Final Mix</div>
         </div>
       </div>
 
-      <!-- Row 1 -->
-      <div class="window-row">
-        <div class="window occupied" data-window="1">
-          <div class="window-content">
-            <div class="window-icon">🎤</div>
-            <div class="window-label">Vocalist</div>
-          </div>
+      <!-- Collaborator Windows - Row 1 -->
+      <div class="window-spot window-1 occupied" data-window="1">
+        <div class="window-content">
+          <div class="window-icon">🎤</div>
+          <div class="window-label">Vocalist</div>
         </div>
-        <div class="window occupied" data-window="2">
-          <div class="window-content">
-            <div class="window-icon">🎸</div>
-            <div class="window-label">Guitarist</div>
-          </div>
+      </div>
+
+      <div class="window-spot window-2 occupied" data-window="2">
+        <div class="window-content">
+          <div class="window-icon">🎸</div>
+          <div class="window-label">Guitarist</div>
         </div>
-        <div class="window occupied" data-window="3">
-          <div class="window-content">
-            <div class="window-icon">🎹</div>
-            <div class="window-label">Pianist</div>
-          </div>
+      </div>
+
+      <div class="window-spot window-3 occupied" data-window="3">
+        <div class="window-content">
+          <div class="window-icon">🎹</div>
+          <div class="window-label">Pianist</div>
         </div>
-        <div class="window occupied" data-window="4">
-          <div class="window-content">
-            <div class="window-icon">🥁</div>
-            <div class="window-label">Drummer</div>
-          </div>
+      </div>
+
+      <div class="window-spot window-4 occupied" data-window="4">
+        <div class="window-content">
+          <div class="window-icon">🥁</div>
+          <div class="window-label">Drummer</div>
         </div>
       </div>
 
       <!-- Row 2 -->
-      <div class="window-row">
-        <div class="window occupied" data-window="5">
-          <div class="window-content">
-            <div class="window-icon">🎺</div>
-            <div class="window-label">Trumpet</div>
-          </div>
+      <div class="window-spot window-5 occupied" data-window="5">
+        <div class="window-content">
+          <div class="window-icon">🎺</div>
+          <div class="window-label">Trumpet</div>
         </div>
-        <div class="window occupied" data-window="6">
-          <div class="window-content">
-            <div class="window-icon">🎷</div>
-            <div class="window-label">Saxophone</div>
-          </div>
+      </div>
+
+      <div class="window-spot window-6 occupied" data-window="6">
+        <div class="window-content">
+          <div class="window-icon">🎷</div>
+          <div class="window-label">Saxophone</div>
         </div>
-        <div class="window" data-window="7">
-          <div class="window-content">
-            <div class="window-icon">➕</div>
-            <div class="window-label">Available</div>
-          </div>
+      </div>
+
+      <div class="window-spot window-7" data-window="7">
+        <div class="window-content">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
         </div>
-        <div class="window" data-window="8">
-          <div class="window-content">
-            <div class="window-icon">➕</div>
-            <div class="window-label">Available</div>
-          </div>
+      </div>
+
+      <div class="window-spot window-8" data-window="8">
+        <div class="window-content">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
         </div>
       </div>
 
       <!-- Row 3 -->
-      <div class="window-row">
-        <div class="window" data-window="9">
-          <div class="window-content">
-            <div class="window-icon">➕</div>
-            <div class="window-label">Available</div>
-          </div>
+      <div class="window-spot window-9" data-window="9">
+        <div class="window-content">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
         </div>
-        <div class="window" data-window="10">
-          <div class="window-content">
-            <div class="window-icon">➕</div>
-            <div class="window-label">Available</div>
-          </div>
+      </div>
+
+      <div class="window-spot window-10" data-window="10">
+        <div class="window-content">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
         </div>
-        <div class="window" data-window="11">
-          <div class="window-content">
-            <div class="window-icon">➕</div>
-            <div class="window-label">Available</div>
-          </div>
+      </div>
+
+      <div class="window-spot window-11" data-window="11">
+        <div class="window-content">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
         </div>
-        <div class="window" data-window="12">
-          <div class="window-content">
-            <div class="window-icon">➕</div>
-            <div class="window-label">Available</div>
-          </div>
+      </div>
+
+      <div class="window-spot window-12" data-window="12">
+        <div class="window-content">
+          <div class="window-icon">➕</div>
+          <div class="window-label">Available</div>
         </div>
       </div>
     </div>
   </div>
 
+  <div class="upload-instructions">
+    <h3>📸 To Use Your Own Brownstone Image</h3>
+    <p><strong>Step 1:</strong> Upload your brownstone photo to GitHub (name it <code>brownstone.jpg</code>)</p>
+    <p><strong>Step 2:</strong> In the HTML, change the image source from the Unsplash URL to <code>brownstone.jpg</code></p>
+    <p><strong>Step 3:</strong> Adjust window positions in CSS to match your building's actual windows!</p>
+  </div>
+
   <div class="instructions">
     <h3>How CityBlocks Works</h3>
     <ul>
-      <li><strong>🏠 Each Creator Gets a Block:</strong> Your personal brownstone to host collaborative projects</li>
-      <li><strong>🎭 12 Collaborator Windows:</strong> Invite singers, musicians, animators, voice actors, and more</li>
-      <li><strong>🎬 Host Window:</strong> The top window showcases the final combined performance</li>
-      <li><strong>🔒 Private or Public:</strong> Keep blocks private during creation, then share when ready</li>
-      <li><strong>✨ Pure Collaboration:</strong> No politics, no algorithms - just creators building together</li>
+      <li><strong>🏠 Each Block is a Building:</strong> Your brownstone hosts collaborative projects</li>
+      <li><strong>🎭 13 Windows:</strong> 1 host window + 12 collaborator windows</li>
+      <li><strong>🎬 Hollywood Squares Style:</strong> Each window shows a different creator's performance</li>
+      <li><strong>✨ Pure Collaboration:</strong> No politics - just creators building together</li>
     </ul>
   </div>
 
-  <!-- Modal for window details -->
+  <!-- Modal -->
   <div class="modal" id="modal">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-title">Window Title</h2>
         <button class="close-btn" id="closeModal">×</button>
       </div>
-      <div id="modal-body">
-        <p>This is where the creator's video performance would appear.</p>
-        <div class="video-placeholder">
-          🎥 Video Player (YouTube/Vimeo embed would go here)
-        </div>
-      </div>
+      <div id="modal-body"></div>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const windows = document.querySelectorAll('.window-spot');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+    const closeModal = document.getElementById('closeModal');
+
+    const windowData = {
+      host: {
+        title: 'Host Window - Final Mix',
+        description: 'The final combined performance with all collaborators mixed together.',
+        type: 'Final Performance'
+      },
+      1: { title: 'Vocalist - Sarah Chen', description: 'Lead vocals from Seattle', type: 'Audio' },
+      2: { title: 'Guitarist - Marcus Rivera', description: 'Jazz guitar from Brooklyn', type: 'Audio' },
+      3: { title: 'Pianist - Elena Volkov', description: 'Piano from Moscow', type: 'Audio' },
+      4: { title: 'Drummer - James Park', description: 'Percussion from LA', type: 'Audio' },
+      5: { title: 'Trumpet - Antoine Dubois', description: 'Brass from Paris', type: 'Audio' },
+      6: { title: 'Saxophone - Yuki Tanaka', description: 'Sax from Tokyo', type: 'Audio' }
+    };
+
+    windows.forEach(window => {
+      window.addEventListener('click', () => {
+        const windowId = window.dataset.window;
+        const data = windowData[windowId];
+
+        if (data) {
+          modalTitle.textContent = data.title;
+          modalBody.innerHTML = `
+            <p style="color: #555; margin-bottom: 15px;">${data.description}</p>
+            <div style="background: rgba(102, 126, 234, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+              <strong style="color: #667eea;">Type:</strong> ${data.type}
+            </div>
+            <div class="video-placeholder">
+              🎥 Video/Audio Player<br>
+              <small style="opacity: 0.8;">(YouTube/Vimeo embed goes here)</small>
+            </div>
+          `;
+        } else {
+          modalTitle.textContent = 'Available Window';
+          modalBody.innerHTML = `
+            <p style="color: #555; margin-bottom: 15px;">This window is available for a new collaborator!</p>
+            <div style="background: rgba(102, 126, 234, 0.1); padding: 20px; border-radius: 8px; text-align: center;">
+              <div style="font-size: 3rem; margin-bottom: 10px;">➕</div>
+              <p><strong style="color: #667eea;">Invite a Collaborator</strong></p>
+              <p style="font-size: 0.9rem; margin-top: 10px; color: #666;">Any creator can join this project</p>
+            </div>
+          `;
+        }
+        modal.classList.add('active');
+      });
+    });
+
+    closeModal.addEventListener('click', () => modal.classList.remove('active'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.classList.remove('active'); });
+  </script>
 </body>
 </html>
