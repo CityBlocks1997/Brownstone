@@ -4,67 +4,68 @@ const modalTitle = document.getElementById('modal-title');
 const modalBody = document.getElementById('modal-body');
 const closeModal = document.getElementById('closeModal');
 
-// Window data - UPDATE VIDEO URLs HERE
+// EXAMPLE WINDOW DATA - Shows how to populate your CityBlocks
+// Replace these with your actual video URLs and creator information
 const windowData = {
   host: {
-    title: 'Host Window - Final Mix',
-    description: 'The final combined performance featuring all collaborators mixed together into one cohesive piece.',
+    title: 'Host Window - Jazz Fusion Final Mix',
+    description: 'The complete collaborative jazz fusion project featuring all 6 musicians blended into one performance.',
     type: 'Final Performance',
-    videoUrl: '', // Add YouTube/Vimeo URL here (e.g., 'https://www.youtube.com/embed/VIDEO_ID')
-    creator: 'Block Host',
+    videoUrl: 'https://www.youtube.com/embed/jGflUbPQfW8', // Example jazz video
+    creator: 'Block Host - Alex Johnson',
     occupied: true
   },
   1: {
-    title: 'Collaborator 1',
-    description: 'Window 1 - Available for collaboration',
-    type: 'Audio/Video Performance',
-    videoUrl: '', // Add video URL here
-    creator: '',
-    occupied: false
+    title: 'Vocalist - Sarah Chen',
+    description: 'Smooth jazz vocals with improvised scat sections. Recorded in home studio, Seattle, WA.',
+    type: 'Audio Performance',
+    videoUrl: 'https://www.youtube.com/embed/neV3EPgvZ3g', // Example vocal performance
+    creator: 'Sarah Chen',
+    occupied: true
   },
   2: {
-    title: 'Collaborator 2',
-    description: 'Window 2 - Available for collaboration',
-    type: 'Audio/Video Performance',
-    videoUrl: '',
-    creator: '',
-    occupied: false
+    title: 'Guitarist - Marcus Rivera',
+    description: 'Jazz guitar with fusion elements and complex chord progressions. Brooklyn, NY.',
+    type: 'Audio Performance',
+    videoUrl: '', // Add URL when ready
+    creator: 'Marcus Rivera',
+    occupied: true
   },
   3: {
-    title: 'Collaborator 3',
-    description: 'Window 3 - Available for collaboration',
-    type: 'Audio/Video Performance',
-    videoUrl: '',
-    creator: '',
-    occupied: false
+    title: 'Pianist - Elena Volkov',
+    description: 'Piano accompaniment with classical jazz influences. Contributing from Moscow.',
+    type: 'Audio Performance',
+    videoUrl: '', // Add URL when ready
+    creator: 'Elena Volkov',
+    occupied: true
   },
   4: {
-    title: 'Collaborator 4',
-    description: 'Window 4 - Available for collaboration',
-    type: 'Audio/Video Performance',
-    videoUrl: '',
-    creator: '',
-    occupied: false
+    title: 'Drummer - James Park',
+    description: 'Rhythm section with complex time signatures. Recorded in professional studio, Los Angeles.',
+    type: 'Audio Performance',
+    videoUrl: '', // Add URL when ready
+    creator: 'James Park',
+    occupied: true
   },
   5: {
-    title: 'Collaborator 5',
-    description: 'Window 5 - Available for collaboration',
-    type: 'Audio/Video Performance',
-    videoUrl: '',
-    creator: '',
-    occupied: false
+    title: 'Trumpet - Antoine Dubois',
+    description: 'Brass lead melodies and harmonies with bebop styling. Paris, France.',
+    type: 'Audio Performance',
+    videoUrl: '', // Add URL when ready
+    creator: 'Antoine Dubois',
+    occupied: true
   },
   6: {
-    title: 'Collaborator 6',
-    description: 'Window 6 - Available for collaboration',
-    type: 'Audio/Video Performance',
-    videoUrl: '',
-    creator: '',
-    occupied: false
+    title: 'Saxophone - Yuki Tanaka',
+    description: 'Alto sax solos and improvisations. Recording from Tokyo, Japan.',
+    type: 'Audio Performance',
+    videoUrl: '', // Add URL when ready
+    creator: 'Yuki Tanaka',
+    occupied: true
   },
   7: {
     title: 'Collaborator 7',
-    description: 'Window 7 - Available for collaboration',
+    description: 'This window is open for a bass player or additional instrumentalist to join the project.',
     type: 'Audio/Video Performance',
     videoUrl: '',
     creator: '',
@@ -72,7 +73,7 @@ const windowData = {
   },
   8: {
     title: 'Collaborator 8',
-    description: 'Window 8 - Available for collaboration',
+    description: 'Available for visual artist, animator, or video editor to add visual elements.',
     type: 'Audio/Video Performance',
     videoUrl: '',
     creator: '',
@@ -80,7 +81,7 @@ const windowData = {
   },
   9: {
     title: 'Collaborator 9',
-    description: 'Window 9 - Available for collaboration',
+    description: 'Open window ready for any creative contributor.',
     type: 'Audio/Video Performance',
     videoUrl: '',
     creator: '',
@@ -88,7 +89,7 @@ const windowData = {
   },
   10: {
     title: 'Collaborator 10',
-    description: 'Window 10 - Available for collaboration',
+    description: 'Available collaboration spot for this CityBlock project.',
     type: 'Audio/Video Performance',
     videoUrl: '',
     creator: '',
@@ -96,7 +97,7 @@ const windowData = {
   },
   11: {
     title: 'Collaborator 11',
-    description: 'Window 11 - Available for collaboration',
+    description: 'Empty window waiting for a creative collaborator.',
     type: 'Audio/Video Performance',
     videoUrl: '',
     creator: '',
@@ -104,7 +105,7 @@ const windowData = {
   },
   12: {
     title: 'Collaborator 12',
-    description: 'Window 12 - Available for collaboration',
+    description: 'Last available window in this brownstone collaboration block.',
     type: 'Audio/Video Performance',
     videoUrl: '',
     creator: '',
@@ -192,26 +193,3 @@ document.addEventListener('keydown', (e) => {
     modal.classList.remove('active');
   }
 });
-
-/* 
- * HOW TO ADD VIDEOS:
- * 
- * 1. Get your video's embed URL:
- *    - YouTube: https://www.youtube.com/embed/VIDEO_ID
- *    - Vimeo: https://player.vimeo.com/video/VIDEO_ID
- * 
- * 2. Update windowData above with your video information:
- *    - Change 'occupied' to true
- *    - Add the 'videoUrl' 
- *    - Update 'title', 'description', and 'creator' fields
- * 
- * Example:
- *    1: {
- *      title: 'Vocalist - Sarah Chen',
- *      description: 'Lead vocals with jazz improvisation',
- *      type: 'Audio Performance',
- *      videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
- *      creator: 'Sarah Chen',
- *      occupied: true
- *    }
- */

@@ -4,570 +4,150 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CityBlocks - Creator Collaboration</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(to bottom, #87CEEB 0%, #B0C4DE 100%);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      color: #333;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .header p {
-      font-size: 1.1rem;
-      color: #333;
-      margin-bottom: 15px;
-    }
-
-    .block-info {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 12px 20px;
-      border-radius: 30px;
-      display: inline-block;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      font-size: 0.95rem;
-    }
-
-    .block-info strong {
-      color: #667eea;
-    }
-
-    /* Main building container */
-    .building-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    /* The brownstone building image */
-    .building-image {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 8px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-      object-fit: contain;
-    }
-
-    /* Container for all window overlays */
-    .windows-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    /* Individual clickable window areas */
-    .window-spot {
-      position: absolute;
-      cursor: pointer;
-      pointer-events: all;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .window-spot:hover {
-      border-color: #667eea;
-      box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
-      transform: scale(1.05);
-      z-index: 10;
-    }
-
-    /* Window content that appears on hover or when occupied */
-    .window-content {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .window-spot:hover .window-content {
-      opacity: 1;
-    }
-
-    .window-spot.occupied .window-content {
-      background: linear-gradient(135deg, 
-        rgba(102, 126, 234, 0.6) 0%, 
-        rgba(118, 75, 162, 0.6) 100%
-      );
-      opacity: 0.3;
-    }
-
-    .window-spot.occupied:hover .window-content {
-      opacity: 1;
-    }
-
-    .window-icon {
-      font-size: 2rem;
-      margin-bottom: 5px;
-      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
-    }
-
-    .window-label {
-      background: rgba(0, 0, 0, 0.9);
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 0.7rem;
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Positioning for 13 windows - adjusted for brownstone layout */
-    /* Host window at top on parapet/roofline */
-    .window-host {
-      top: 4%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 22%;
-      height: 10%;
-    }
-
-    .window-host .window-label {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    /* Row 1 - Top floor - 4 windows */
-    .window-1 { top: 18%; left: 10%; width: 16%; height: 12%; }
-    .window-2 { top: 18%; left: 31%; width: 16%; height: 12%; }
-    .window-3 { top: 18%; left: 52%; width: 16%; height: 12%; }
-    .window-4 { top: 18%; left: 73%; width: 16%; height: 12%; }
-
-    /* Row 2 - Middle floor - 4 windows */
-    .window-5 { top: 38%; left: 10%; width: 16%; height: 12%; }
-    .window-6 { top: 38%; left: 31%; width: 16%; height: 12%; }
-    .window-7 { top: 38%; left: 52%; width: 16%; height: 12%; }
-    .window-8 { top: 38%; left: 73%; width: 16%; height: 12%; }
-
-    /* Row 3 - Lower floor - 4 windows */
-    .window-9 { top: 58%; left: 10%; width: 16%; height: 12%; }
-    .window-10 { top: 58%; left: 31%; width: 16%; height: 12%; }
-    .window-11 { top: 58%; left: 52%; width: 16%; height: 12%; }
-    .window-12 { top: 58%; left: 73%; width: 16%; height: 12%; }
-
-    /* Door area (not clickable for now, but reserved for future) */
-    .door-area {
-      position: absolute;
-      bottom: 5%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 18%;
-      height: 18%;
-      border: 2px dashed rgba(102, 126, 234, 0.3);
-      border-radius: 8px 8px 0 0;
-      pointer-events: none;
-    }
-
-    .upload-instructions {
-      text-align: center;
-      margin-top: 40px;
-      margin-bottom: 30px;
-      padding: 25px 30px;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 12px;
-      max-width: 700px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .upload-instructions h3 {
-      color: #667eea;
-      margin-bottom: 15px;
-      font-size: 1.4rem;
-    }
-
-    .upload-instructions p {
-      margin: 10px 0;
-      line-height: 1.6;
-    }
-
-    .upload-instructions code {
-      background: #f5f5f5;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      color: #667eea;
-      font-weight: 600;
-    }
-
-    /* Footer/advertising space */
-    .footer-space {
-      margin-top: 40px;
-      padding: 30px;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 12px;
-      max-width: 700px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-
-    .footer-space h3 {
-      color: #667eea;
-      margin-bottom: 15px;
-    }
-
-    .footer-space p {
-      color: #666;
-      line-height: 1.6;
-    }
-
-    .instructions {
-      text-align: center;
-      margin-top: 30px;
-      color: #333;
-      max-width: 700px;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .instructions h3 {
-      color: #667eea;
-      margin-bottom: 15px;
-      font-size: 1.3rem;
-    }
-
-    .instructions ul {
-      list-style: none;
-      padding: 0;
-      text-align: left;
-    }
-
-    .instructions li {
-      margin: 10px 0;
-      padding: 10px;
-      background: rgba(102, 126, 234, 0.05);
-      border-radius: 8px;
-      border-left: 3px solid #667eea;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 800px;
-      width: 100%;
-      position: relative;
-      border: 3px solid #667eea;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid #eee;
-    }
-
-    .modal-header h2 {
-      color: #667eea;
-      margin: 0;
-    }
-
-    .close-btn {
-      background: #f5f5f5;
-      border: none;
-      color: #333;
-      font-size: 2rem;
-      cursor: pointer;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-    }
-
-    .close-btn:hover {
-      background: #667eea;
-      color: #fff;
-    }
-
-    .video-placeholder {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 1.2rem;
-      margin-top: 15px;
-      flex-direction: column;
-    }
-
-    #modal-body {
-      color: #555;
-    }
-
-    @media (max-width: 768px) {
-      .window-icon {
-        font-size: 1.5rem;
-      }
-      
-      .window-label {
-        font-size: 0.6rem;
-        padding: 3px 8px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="header">
     <h1>CityBlocks</h1>
     <p>Where Creators Collaborate</p>
     <div class="block-info">
-      <strong>Demo Block:</strong> "Jazz Fusion Project"
+      <strong>Your Block:</strong> Click any window to add or view content
     </div>
   </div>
 
-  <div class="building-wrapper">
-    <!-- Replace this image with your brownstone photo -->
-    <img src="brownstone.jpg"
+  <div class="building-container">
+    <!-- Brownstone image with clickable map -->
+    <img src="brownstone.jpg" 
+         alt="CityBlocks Brownstone" 
+         usemap="#brownstone-map" 
+         class="building-image">
     
-    <!-- Clickable window overlays positioned on the building -->
-    <div class="windows-overlay">
-      <!-- Host Window -->
-      <div class="window-spot window-host occupied" data-window="host">
-        <div class="window-content">
-          <div class="window-icon">🎬</div>
-          <div class="window-label">HOST - Final Mix</div>
-        </div>
-      </div>
+    <!-- Image Map Definition -->
+    <map name="brownstone-map">
+      <!-- HOST WINDOW - Top decorative area (parapet/roofline) -->
+      <area shape="rect" 
+            coords="290,45,540,160" 
+            href="javascript:void(0)" 
+            onclick="openWindow('host')" 
+            alt="Host Window"
+            title="Host Window - Final Performance">
 
-      <!-- Collaborator Windows - Row 1 -->
-      <div class="window-spot window-1 occupied" data-window="1">
-        <div class="window-content">
-          <div class="window-icon">🎤</div>
-          <div class="window-label">Vocalist</div>
-        </div>
-      </div>
+      <!-- ROW 1 - Top Floor (3 windows) -->
+      <area shape="rect" 
+            coords="130,240,300,380" 
+            href="javascript:void(0)" 
+            onclick="openWindow('1')" 
+            alt="Window 1"
+            title="Collaborator 1">
+      
+      <area shape="rect" 
+            coords="330,240,500,380" 
+            href="javascript:void(0)" 
+            onclick="openWindow('2')" 
+            alt="Window 2"
+            title="Collaborator 2">
+      
+      <area shape="rect" 
+            coords="530,240,700,380" 
+            href="javascript:void(0)" 
+            onclick="openWindow('3')" 
+            alt="Window 3"
+            title="Collaborator 3">
 
-      <div class="window-spot window-2 occupied" data-window="2">
-        <div class="window-content">
-          <div class="window-icon">🎸</div>
-          <div class="window-label">Guitarist</div>
-        </div>
-      </div>
+      <!-- ROW 2 - Second Floor (3 windows) -->
+      <area shape="rect" 
+            coords="130,430,300,570" 
+            href="javascript:void(0)" 
+            onclick="openWindow('4')" 
+            alt="Window 4"
+            title="Collaborator 4">
+      
+      <area shape="rect" 
+            coords="330,430,500,570" 
+            href="javascript:void(0)" 
+            onclick="openWindow('5')" 
+            alt="Window 5"
+            title="Collaborator 5">
+      
+      <area shape="rect" 
+            coords="530,430,700,570" 
+            href="javascript:void(0)" 
+            onclick="openWindow('6')" 
+            alt="Window 6"
+            title="Collaborator 6">
 
-      <div class="window-spot window-3 occupied" data-window="3">
-        <div class="window-content">
-          <div class="window-icon">🎹</div>
-          <div class="window-label">Pianist</div>
-        </div>
-      </div>
+      <!-- ROW 3 - Third Floor (3 windows) -->
+      <area shape="rect" 
+            coords="130,620,300,760" 
+            href="javascript:void(0)" 
+            onclick="openWindow('7')" 
+            alt="Window 7"
+            title="Collaborator 7">
+      
+      <area shape="rect" 
+            coords="330,620,500,760" 
+            href="javascript:void(0)" 
+            onclick="openWindow('8')" 
+            alt="Window 8"
+            title="Collaborator 8">
+      
+      <area shape="rect" 
+            coords="530,620,700,760" 
+            href="javascript:void(0)" 
+            onclick="openWindow('9')" 
+            alt="Window 9"
+            title="Collaborator 9">
 
-      <div class="window-spot window-4 occupied" data-window="4">
-        <div class="window-content">
-          <div class="window-icon">🥁</div>
-          <div class="window-label">Drummer</div>
-        </div>
-      </div>
-
-      <!-- Row 2 -->
-      <div class="window-spot window-5 occupied" data-window="5">
-        <div class="window-content">
-          <div class="window-icon">🎺</div>
-          <div class="window-label">Trumpet</div>
-        </div>
-      </div>
-
-      <div class="window-spot window-6 occupied" data-window="6">
-        <div class="window-content">
-          <div class="window-icon">🎷</div>
-          <div class="window-label">Saxophone</div>
-        </div>
-      </div>
-
-      <div class="window-spot window-7" data-window="7">
-        <div class="window-content">
-          <div class="window-icon">➕</div>
-          <div class="window-label">Available</div>
-        </div>
-      </div>
-
-      <div class="window-spot window-8" data-window="8">
-        <div class="window-content">
-          <div class="window-icon">➕</div>
-          <div class="window-label">Available</div>
-        </div>
-      </div>
-
-      <!-- Row 3 -->
-      <div class="window-spot window-9" data-window="9">
-        <div class="window-content">
-          <div class="window-icon">➕</div>
-          <div class="window-label">Available</div>
-        </div>
-      </div>
-
-      <div class="window-spot window-10" data-window="10">
-        <div class="window-content">
-          <div class="window-icon">➕</div>
-          <div class="window-label">Available</div>
-        </div>
-      </div>
-
-      <div class="window-spot window-11" data-window="11">
-        <div class="window-content">
-          <div class="window-icon">➕</div>
-          <div class="window-label">Available</div>
-        </div>
-      </div>
-
-      <div class="window-spot window-12" data-window="12">
-        <div class="window-content">
-          <div class="window-icon">➕</div>
-          <div class="window-label">Available</div>
-        </div>
-      </div>
-    </div>
+      <!-- ROW 4 - Fourth Floor (3 windows) -->
+      <area shape="rect" 
+            coords="130,810,300,950" 
+            href="javascript:void(0)" 
+            onclick="openWindow('10')" 
+            alt="Window 10"
+            title="Collaborator 10">
+      
+      <area shape="rect" 
+            coords="330,810,500,950" 
+            href="javascript:void(0)" 
+            onclick="openWindow('11')" 
+            alt="Window 11"
+            title="Collaborator 11">
+      
+      <area shape="rect" 
+            coords="530,810,700,950" 
+            href="javascript:void(0)" 
+            onclick="openWindow('12')" 
+            alt="Window 12"
+            title="Collaborator 12">
+    </map>
   </div>
 
-  <div class="upload-instructions">
-    <h3>🎨 Customize Your Brownstone</h3>
-    <p><strong>Step 1:</strong> Upload your brownstone photo to GitHub (name it <code>brownstone.jpg</code>)</p>
-    <p><strong>Step 2:</strong> Replace the image URL in the HTML with <code>brownstone.jpg</code></p>
-    <p><strong>Step 3:</strong> Adjust window positions in CSS to perfectly match your building!</p>
-    <p style="margin-top: 15px; font-size: 0.9rem; color: #888;">The top window sits on the parapet. Door reserved for future features.</p>
-  </div>
-
+  <!-- Instructions Section -->
   <div class="instructions">
-    <h3>How CityBlocks Works</h3>
+    <h3>🏙️ How CityBlocks Works</h3>
     <ul>
-      <li><strong>🏠 Each Block is a Building:</strong> Your brownstone hosts collaborative projects</li>
-      <li><strong>🎭 13 Windows:</strong> 1 host window (top) + 12 collaborator windows</li>
-      <li><strong>🎬 Hollywood Squares Style:</strong> Each window shows a different creator's performance</li>
+      <li><strong>🎭 Physical Graffiti Style:</strong> Inspired by Led Zeppelin's iconic album cover</li>
+      <li><strong>🏠 Host Window (Top):</strong> The owner's window featuring the final combined performance</li>
+      <li><strong>🎬 12 Collaborator Windows:</strong> Each window showcases a different creator's contribution</li>
+      <li><strong>🔒 Public or Private:</strong> Choose whether your block is open to all or invite-only</li>
+      <li><strong>🎨 Custom Backgrounds:</strong> Select different building styles for your homepage</li>
       <li><strong>✨ Pure Collaboration:</strong> No politics - just creators building together</li>
     </ul>
   </div>
 
-  <div class="footer-space">
-    <h3>🚀 Ready to Pitch</h3>
-    <p>This demo showcases the CityBlocks concept: a social network where creators collaborate in virtual brownstone buildings.</p>
-    <p style="margin-top: 15px;"><strong>Perfect for Adobe acquisition.</strong></p>
-    <p style="margin-top: 10px; font-size: 0.9rem; color: #888;">Space reserved for branding, partnerships, or advertising</p>
-  </div>
-
-  <!-- Modal -->
+  <!-- Modal for Video Display -->
   <div class="modal" id="modal">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-title">Window Title</h2>
-        <button class="close-btn" id="closeModal">×</button>
+        <button class="close-btn" id="closeModal">&times;</button>
       </div>
-      <div id="modal-body"></div>
+      <div id="modal-body">
+        <!-- Video content will be inserted here -->
+      </div>
     </div>
   </div>
 
-  <script>
-    const windows = document.querySelectorAll('.window-spot');
-    const modal = document.getElementById('modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalBody = document.getElementById('modal-body');
-    const closeModal = document.getElementById('closeModal');
-
-    const windowData = {
-      host: {
-        title: 'Host Window - Final Mix',
-        description: 'The final combined performance with all collaborators mixed together.',
-        type: 'Final Performance'
-      },
-      1: { title: 'Vocalist - Sarah Chen', description: 'Lead vocals from Seattle', type: 'Audio' },
-      2: { title: 'Guitarist - Marcus Rivera', description: 'Jazz guitar from Brooklyn', type: 'Audio' },
-      3: { title: 'Pianist - Elena Volkov', description: 'Piano from Moscow', type: 'Audio' },
-      4: { title: 'Drummer - James Park', description: 'Percussion from LA', type: 'Audio' },
-      5: { title: 'Trumpet - Antoine Dubois', description: 'Brass from Paris', type: 'Audio' },
-      6: { title: 'Saxophone - Yuki Tanaka', description: 'Sax from Tokyo', type: 'Audio' }
-    };
-
-    windows.forEach(window => {
-      window.addEventListener('click', () => {
-        const windowId = window.dataset.window;
-        const data = windowData[windowId];
-
-        if (data) {
-          modalTitle.textContent = data.title;
-          modalBody.innerHTML = `
-            <p style="color: #555; margin-bottom: 15px;">${data.description}</p>
-            <div style="background: rgba(102, 126, 234, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-              <strong style="color: #667eea;">Type:</strong> ${data.type}
-            </div>
-            <div class="video-placeholder">
-              🎥 Video/Audio Player<br>
-              <small style="opacity: 0.8;">(YouTube/Vimeo embed goes here)</small>
-            </div>
-          `;
-        } else {
-          modalTitle.textContent = 'Available Window';
-          modalBody.innerHTML = `
-            <p style="color: #555; margin-bottom: 15px;">This window is available for a new collaborator!</p>
-            <div style="background: rgba(102, 126, 234, 0.1); padding: 20px; border-radius: 8px; text-align: center;">
-              <div style="font-size: 3rem; margin-bottom: 10px;">➕</div>
-              <p><strong style="color: #667eea;">Invite a Collaborator</strong></p>
-              <p style="font-size: 0.9rem; margin-top: 10px; color: #666;">Any creator can join this project</p>
-            </div>
-          `;
-        }
-        modal.classList.add('active');
-      });
-    });
-
-    closeModal.addEventListener('click', () => modal.classList.remove('active'));
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.classList.remove('active'); });
-  </script>
+  <script src="script.js"></script>
 </body>
-
 </html>
