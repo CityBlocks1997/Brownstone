@@ -1,32 +1,76 @@
-/* Host window - top center in black pediment */
-.window-host {
-  top: 9%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 24%;
-  height: 8%;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.window-host .window-label {
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(to bottom, #87CEEB 0%, #B0C4DE 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  color: #333;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Row 1 - Top floor (3 windows) */
-.window-1 { top: 23%; left: 12%; width: 24%; height: 12%; }
-.window-2 { top: 23%; left: 38%; width: 24%; height: 12%; }
-.window-3 { top: 23%; left: 64%; width: 24%; height: 12%; }
+.header p {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 15px;
+}
 
-/* Row 2 - Second floor (3 windows) */
-.window-4 { top: 38%; left: 12%; width: 24%; height: 12%; }
-.window-5 { top: 38%; left: 38%; width: 24%; height: 12%; }
-.window-6 { top: 38%; left: 64%; width: 24%; height: 12%; }
+.block-info {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 12px 20px;
+  border-radius: 30px;
+  display: inline-block;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 0.95rem;
+}
 
-/* Row 3 - Third floor (3 windows) */
-.window-7 { top: 53%; left: 12%; width: 24%; height: 12%; }
-.window-8 { top: 53%; left: 38%; width: 24%; height: 12%; }
-.window-9 { top: 53%; left: 64%; width: 24%; height: 12%; }
+.block-info strong {
+  color: #667eea;
+}
 
-/* Row 4 - Ground floor (3 windows - avoiding door area) */
-.window-10 { top: 68%; left: 12%; width: 24%; height: 12%; }
-.window-11 { top: 68%; left: 38%; width: 24%; height: 12%; }
-.window-12 { top: 68%; left: 64%; width: 24%; height: 12%; }
+.building-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.building-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  object-fit: contain;
+}
+
+.windows-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.windo
