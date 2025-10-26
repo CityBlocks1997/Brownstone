@@ -50,24 +50,24 @@ windows.forEach(window => {
     if (data) {
       modalTitle.textContent = data.title;
       modalBody.innerHTML = `
-        <p style="color: #a8b2d1; margin-bottom: 15px;">${data.description}</p>
+        <p style="color: #555; margin-bottom: 15px;">${data.description}</p>
         <div style="background: rgba(102, 126, 234, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
           <strong style="color: #667eea;">Type:</strong> ${data.type}
         </div>
         <div class="video-placeholder">
           🎥 Video/Audio Player<br>
-          <small style="opacity: 0.6;">(In production: YouTube/Vimeo/SoundCloud embed)</small>
+          <small style="opacity: 0.8;">(In production: YouTube/Vimeo/SoundCloud embed)</small>
         </div>
       `;
       modal.classList.add('active');
     } else {
       modalTitle.textContent = 'Available Window';
       modalBody.innerHTML = `
-        <p style="color: #a8b2d1; margin-bottom: 15px;">This window is available for a new collaborator!</p>
+        <p style="color: #555; margin-bottom: 15px;">This window is available for a new collaborator!</p>
         <div style="background: rgba(102, 126, 234, 0.1); padding: 20px; border-radius: 8px; text-align: center;">
           <div style="font-size: 3rem; margin-bottom: 10px;">➕</div>
           <p><strong style="color: #667eea;">Invite a Collaborator</strong></p>
-          <p style="font-size: 0.9rem; margin-top: 10px;">Bass player, violinist, animator, or any creator to join this project</p>
+          <p style="font-size: 0.9rem; margin-top: 10px; color: #666;">Bass player, violinist, animator, or any creator to join this project</p>
         </div>
       `;
       modal.classList.add('active');
